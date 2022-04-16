@@ -1,6 +1,6 @@
 ﻿namespace init;
 
-struct Item
+struct SchemaItem
 {
     public string command { get; set; }
     public string path { get; set; }

@@ -65,7 +65,7 @@ internal class Program
         }
 
         string jsonData = File.ReadAllText(jsonFile);
-        List<Item> items = JsonSerializer.Deserialize<List<Item>>(jsonData)!;
+        List<SchemaItem> items = JsonSerializer.Deserialize<List<SchemaItem>>(jsonData)!;
 
         var item = items.Find((item) => item.command == command);
         if (String.IsNullOrEmpty(item.path))
