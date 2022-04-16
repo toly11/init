@@ -2,13 +2,14 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Diagnostics;
 
 namespace init;
 
 internal class Program
 {
 
-    static readonly string jsonFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()!.Location)!, "config.json");
+    static readonly string jsonFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()!.Location)!, "schemas.json");
 
     static void Main(string[] args)
     {
@@ -76,6 +77,24 @@ internal class Program
 
         Console.WriteLine($"executing {item.command}...");
         Move(item.path, dest);
+
+        if (!string.IsNullOrWhiteSpace(item.run))
+        {
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = "cmd.exe";
+            cmd.StartInfo.WorkingDirectory = dest;
+            cmd.StartInfo.RedirectStandardInput = true;
+            cmd.StartInfo.RedirectStandardOutput = true;
+            cmd.StartInfo.CreateNoWindow = true;
+            cmd.StartInfo.UseShellExecute = false;
+            cmd.Start();
+
+            cmd.StandardInput.WriteLine(item.run);
+            cmd.StandardInput.Flush();
+            cmd.StandardInput.Close();
+            cmd.WaitForExit();
+            Console.WriteLine(cmd.StandardOutput.ReadToEnd());
+        }
 
         Console.WriteLine("Goodbye!");
         Environment.Exit(0);
