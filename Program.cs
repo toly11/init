@@ -80,6 +80,8 @@ internal class Program
 
         if (!string.IsNullOrWhiteSpace(item.run))
         {
+            Console.WriteLine("executing run task...");
+
             Process cmd = new Process();
             cmd.StartInfo.FileName = "cmd.exe";
             cmd.StartInfo.WorkingDirectory = dest;
@@ -93,7 +95,10 @@ internal class Program
             cmd.StandardInput.Flush();
             cmd.StandardInput.Close();
             cmd.WaitForExit();
-            Console.WriteLine(cmd.StandardOutput.ReadToEnd());
+
+            var streamLines = cmd.StandardOutput.ReadToEnd().Split("\n");
+            foreach (var line in streamLines[2..(streamLines.Length - 2)])
+                Console.WriteLine(line);
         }
 
         Console.WriteLine("Goodbye!");
